@@ -2,6 +2,7 @@ const Howl = require('howler').Howl;
 
 module.exports = {
   initialize(soundsData) {
+    console.log(soundsData)
     let soundOptions;
 
     const soundNames = Object.getOwnPropertyNames(soundsData);
@@ -39,5 +40,29 @@ module.exports = {
     }
 
     sound.play(spriteName);
+  },
+
+  stop(soundName, spriteName) {
+    const sound = this.sounds[soundName]
+    if ( typeof sound === 'undefined' ) {
+      return console.warn(`
+        The sound '${soundName}' was requested, but redux-sounds doesn't have anything registered under that name.
+        See https://github.com/joshwcomeau/redux-sounds#unregistered-sound
+      `);
+    } else if ( spriteName && typeof sound._sprite[spriteName] === 'undefined' ) {
+      const validSprites = Object.keys(sound._sprite).join(', ');
+
+      return console.warn(`
+        The sound '${soundName}' was found, but it does not have a sprite specified for '${spriteName}'.
+        It only has access to the following sprites: ${validSprites}.
+        See https://github.com/joshwcomeau/redux-sounds#invalid-sprite
+      `);
+    }
+    sound.stop(spriteName)
+  },
+
+  mute(isMute) {
+    Howl.mute(isMute)
   }
+
 }
