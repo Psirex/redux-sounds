@@ -1,8 +1,8 @@
 const Howl = require('howler').Howl;
+const Howler = require('howler').Howler;
 
 module.exports = {
   initialize(soundsData) {
-    console.log(soundsData)
     let soundOptions;
 
     const soundNames = Object.getOwnPropertyNames(soundsData);
@@ -62,7 +62,7 @@ module.exports = {
   },
 
   mute(isMute) {
-    Howl.mute(isMute)
+    Howler.mute(isMute)
   }
 
 }

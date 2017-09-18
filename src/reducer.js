@@ -22,7 +22,7 @@ export const Actions = {
 // Actions
 // ---
 export const ActionCreators = {
-  init: createAction(INITIALIZE, soundsData => soundsData, soundsData => ({sound: ''})),
+  init: createAction(INITIALIZE),
   play: createAction(PLAY, (name) => name, name => ({ sound: name }) ),
   stop: createAction(STOP, name => name, name => ({ sound: name })),
   mute: createAction(MUTE)
