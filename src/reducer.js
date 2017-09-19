@@ -23,7 +23,7 @@ export const Actions = {
 // Actions
 // ---
 export const ActionCreators = {
-  init: createAction(INITIALIZE),
+  init: createAction(INITIALIZE, soundsData => soundsData, soundsData => ({ reduxSound: { action: 'init', soundsData } })),
   play: createAction(PLAY, (name) => name, name => ({ reduxSound: { action: 'play', sound: name } })),
   stop: createAction(STOP, name => name, name => ({ reduxSound: { action: 'stop', sound: name } })),
   mute: createAction(MUTE,

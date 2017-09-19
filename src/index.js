@@ -15,6 +15,8 @@ function soundsMiddleware (soundsData) {
         break
       case 'muteAll': howlerIntegration.muteAll(reduxSound.value)
         break
+      case 'init': howlerIntegration.initialize(reduxSound.soundsData)
+        break
       default:
         console.warn(`The action ${reduxSound.action} desn't exist in the library`)
     }
