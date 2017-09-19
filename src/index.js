@@ -1,33 +1,27 @@
-const howlerIntegration = require('./howler_integration');
+import reducer, { ActionCreators } from './reducer'
+import howlerIntegration from './howler_integration'
 
-function soundsMiddleware(soundsData) {
-  if ( typeof soundsData !== 'object' )
-    throw {
-      name: 'missingSoundData',
-      message: `
-        Please provide an object to soundsMiddleware!
-        When initializing, it needs an object holding all desired sound data.
-        See https://github.com/joshwcomeau/redux-sounds/#troubleshooting
-      `
-    };
-
-  // Set up our sounds object, and pre-load all audio files.
-  // Our sounds object basically just takes the options provided to the
-  // middleware, and constructs a new Howl object for each one with them.
-  howlerIntegration.initialize(soundsData);
-
+function soundsMiddleware (soundsData) {
   return store => next => action => {
-    // Ignore actions that haven't specified a sound.
-    if ( !action.meta || !action.meta.sound ) {
-      return next(action);
+    if (!action.meta.reduxSound) return next(action)
+    const { reduxSound } = action.meta
+    const [ soundName, spriteName ] = (reduxSound.sound || '').split('.')
+    switch (reduxSound.action) {
+      case 'play': howlerIntegration.play(soundName, spriteName)
+        break
+      case 'stop': howlerIntegration.stop(soundName, spriteName)
+        break
+      case 'mute': howlerIntegration.muteSound(soundName, spriteName, reduxSound.value)
+        break
+      case 'muteAll': howlerIntegration.muteAll(reduxSound.value)
+        break
+      case 'init': howlerIntegration.initialize(reduxSound.soundsData)
+        break
+      default:
+        console.warn(`The action ${reduxSound.action} desn't exist in the library`)
     }
-
-    const [ soundName, spriteName ] = action.meta.sound.split('.');
-
-    howlerIntegration.play(soundName, spriteName);
-
-    return next(action);
-  };
+    return next(action)
+  }
 }
 
-module.exports = soundsMiddleware;
+module.exports = {soundsMiddleware, reducer, ActionCreators}
