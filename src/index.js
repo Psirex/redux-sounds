@@ -1,9 +1,9 @@
 import reducer, { ActionCreators } from './reducer'
 import howlerIntegration from './howler_integration'
 
-function soundsMiddleware (soundsData) {
+function soundsMiddleware () {
   return store => next => action => {
-    if (!action.meta.reduxSound) return next(action)
+    if (!action.meta || !action.meta.reduxSound) return next(action)
     const { reduxSound } = action.meta
     const [ soundName, spriteName ] = (reduxSound.sound || '').split('.')
     switch (reduxSound.action) {
