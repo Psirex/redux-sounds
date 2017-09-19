@@ -11,7 +11,7 @@ function soundsMiddleware (soundsData) {
         break
       case 'stop': howlerIntegration.stop(soundName, spriteName)
         break
-      case 'mute': howlerIntegration.mute(soundName, spriteName, reduxSound.value)
+      case 'mute': howlerIntegration.muteSound(soundName, spriteName, reduxSound.value)
         break
       case 'muteAll': howlerIntegration.muteAll(reduxSound.value)
         break
