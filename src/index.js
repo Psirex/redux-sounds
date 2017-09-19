@@ -1,26 +1,25 @@
-const howlerIntegration = require('./howler_integration');
-import reducer, { ActionCreators, Actions } from './reducer'
+import reducer, { ActionCreators } from './reducer'
+import howlerIntegration from './howler_integration'
 
-function soundsMiddleware(soundsData) {
+function soundsMiddleware (soundsData) {
   return store => next => action => {
-    if (action.meta) {
-      const [ soundName, spriteName ] = action.meta.sound.split('.');
-      switch (action.type) {
-        case Actions.PLAY: howlerIntegration.play(soundName, spriteName)
-          break
-        case Actions.STOP: howlerIntegration.stop(soundName, spriteName)
-          break
-      }
-    } else {
-      switch(action.type) {
-        case Actions.INITIALIZE: howlerIntegration.initialize(action.payload)
-          break
-        case Actions.MUTE: howlerIntegration.mute(action.payload)
-          break
-      }
+    if (!action.meta.reduxSound) return next(action)
+    const { reduxSound } = action.meta
+    const [ soundName, spriteName ] = (reduxSound.sound || '').split('.')
+    switch (reduxSound.action) {
+      case 'play': howlerIntegration.play(soundName, spriteName)
+        break
+      case 'stop': howlerIntegration.stop(soundName, spriteName)
+        break
+      case 'mute': howlerIntegration.mute(soundName, spriteName, reduxSound.value)
+        break
+      case 'muteAll': howlerIntegration.muteAll(reduxSound.value)
+        break
+      default:
+        console.warn(`The action ${reduxSound.action} desn't exist in the library`)
     }
-    return next(action);
-  };
+    return next(action)
+  }
 }
 
-module.exports = {soundsMiddleware, reducer, ActionCreators};
+module.exports = {soundsMiddleware, reducer, ActionCreators}
